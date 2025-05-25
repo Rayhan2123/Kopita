@@ -1,38 +1,69 @@
-<?php 
-/*Install Midtrans PHP Library (https://github.com/Midtrans/midtrans-php)
-composer require midtrans/midtrans-php
-                              
-Alternatively, if you are not using **Composer**, you can download midtrans-php library 
-(https://github.com/Midtrans/midtrans-php/archive/master.zip), and then require 
-the file manually.   
+//Toggle class active untuk hamburger menu
+const navbarNav = document.querySelector(".navbar-nav");
+// ketika hamburger menu di klik
+document.querySelector("#hamburger-menu").onclick = () => {
+  navbarNav.classList.toggle("active");
+};
 
-require_once dirname(__FILE__) . '/pathofproject/Midtrans.php'; */
+// Toggle class active untuk search form
+const searchForm = document.querySelector(".search-form");
+const searchbox = document.querySelector("#search-box");
 
-require_once dirname(__FILE__) . '/midtrans-php-master/Midtrans.php';
+document.querySelector("#search-button").onclick = (e) => {
+  document.querySelector(".search-form").classList.toggle("active");
+  searchbox.focus();
+  e.preventDefault();
+};
 
-//SAMPLE REQUEST START HERE
+// Toggle class active untuk shopping cart
+const shoppingCart = document.querySelector(".shopping-cart");
 
-// Set your Merchant Server Key
-\Midtrans\Config::$serverKey = 'Mid-server-623YCVwtxIbmpcQdz2ZHoOCf';
-// Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-\Midtrans\Config::$isProduction = true;
-// Set sanitization on (default)
-\Midtrans\Config::$isSanitized = true;
-// Set 3DS transaction for credit card to true
-\Midtrans\Config::$is3ds = true;
+document.querySelector("#shopping-cart-button").onclick = (e) => {
+  shoppingCart.classList.toggle("active");
+  e.preventDefault();
+};
 
-$params = array(
-    'transaction_details' => array(
-        'order_id' => rand(),
-        'gross_amount' => $_POST['total'],
-    ),
-    'item_detail' => json_decode($_POST['items'], true),
-    'customer_details' => array(
-        'first_name' => $_POST['name'],
-        'email' => $_POST['email'],
-        'phone' => $_POST['phone'],
-    ),
-);
+// Klik di luar elemen
+const hamburger = document.querySelector("#hamburger-menu");
+const searchButton = document.querySelector("#search-button");
+const sc = document.querySelector("#shopping-cart-button");
 
-$snapToken = \Midtrans\Snap::getSnapToken($params);
-echo $snapToken;
+document.addEventListener("click", function (e) {
+  if (!hamburger.contains(e.target) && !navbarNav.contains(e.target)) {
+    navbarNav.classList.remove("active");
+  }
+
+  if (!searchButton.contains(e.target) && !searchForm.contains(e.target)) {
+    searchForm.classList.remove("active");
+  }
+  if (!sc.contains(e.target) && !shoppingCart.contains(e.target)) {
+    shoppingCart.classList.remove("active");
+  }
+});
+
+// Modal Box
+document.querySelectorAll(".item-detail-button").forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+    e.preventDefault();
+    document.querySelector("#item-detail-modal").style.display = "flex";
+    document.body.classList.add("no-scroll");
+  });
+});
+
+document
+  .querySelector(".modal .close-icon")
+  .addEventListener("click", function () {
+    document.querySelector("#item-detail-modal").style.display = "none";
+    document.body.classList.remove("no-scroll");
+  });
+
+// Klik di luar modal untuk menutup
+window.addEventListener("click", function (e) {
+  const modal = document.querySelector("#item-detail-modal");
+  const modalContent = document.querySelector(".modal .modal-container");
+
+  if (e.target === modal) {
+    modal.style.display = "none";
+    document.body.classList.remove("no-scroll");
+  }
+});
